@@ -96,12 +96,14 @@ def dijkstra(start, finish, ms, adj, v):
     '''
     не работает для графиках с тупиками
     '''
-    tmp_ms = ms
+    tmp_ms = [[ms[j][i] for i in range(v)] for j in range(v)]
     dist = [99999999] * v
     completed = [False] * v
     completed[start] = True
     dist[start] = 0
     queue = [start]
+    last = [-1] * v
+    last[0] = 0
 
     while not all(completed):
         v0 = queue.pop(0)  # убираем из очереди вершину, тк мы ее либо продолжим, либо нет
@@ -118,8 +120,14 @@ def dijkstra(start, finish, ms, adj, v):
                 tmp_ms[v0][i] = 0  # исключаем ребро и списка ребер, типо оно уже пройдено
                 if dist[i] > new_dist:
                     dist[i] = new_dist
+                    last[i] = v0
                 queue.append(i)
 
-    return dist[finish]
+    x = -1
+    way = [v-1]
+    while x != 0:
+        x = last[x]
+        way.append(x)
+    return dist[finish], dist, way[::-1]
 
 print(dijkstra(0, 3, ms2, adj2, v2))
